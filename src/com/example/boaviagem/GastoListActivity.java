@@ -8,7 +8,13 @@ import java.util.Map;
 import android.app.ListActivity;
 import android.media.audiofx.Visualizer;
 import android.os.Bundle;
+import android.support.v7.internal.widget.AdapterViewCompat.AdapterContextMenuInfo;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
@@ -36,6 +42,9 @@ public class GastoListActivity extends ListActivity implements
 
 		setListAdapter(adapter);
 		getListView().setOnItemClickListener((OnItemClickListener)this);
+		
+		//registraremos aqui o novo menu de contexto.
+		registerForContextMenu(getListView());
 	}
 
 	@Override
@@ -45,6 +54,7 @@ public class GastoListActivity extends ListActivity implements
 		String descricao = (String) map.get("descricao");
 		String mensagem = "Gasto selecionada "+descricao;
 		Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show();
+		
 	}
 	
 	private class GastoViewBinder implements ViewBinder{
@@ -110,6 +120,27 @@ public class GastoListActivity extends ListActivity implements
 		
 		return gastos;
 		
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.gasto_menu, menu);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		
+		if (item.getItemId()==R.id.remover) {
+			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+			gastos.remove(info.position);
+			getListView().invalidateViews();
+			dataAnterior="";
+			//remover do banco de dados
+			return true;
+		}
+		return super.onContextItemSelected(item);
 	}
 
 }
