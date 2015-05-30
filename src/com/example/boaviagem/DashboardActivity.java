@@ -40,6 +40,10 @@ public class DashboardActivity extends Activity {
 		case R.id.minhas_viagens:
 			startActivity(new Intent(this, ViagemListActivity.class));
 			break;
+			
+			case R.id.configuracoes:
+				startActivity(new Intent(this, ConfiguracoesActivity.class));
+				break;
 
 		default:
 			break;
